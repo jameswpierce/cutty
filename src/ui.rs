@@ -43,6 +43,17 @@ pub fn ui(frame: &mut Frame, app: &App) {
             frame.render_widget(footer, layout[1]);
         }
         CurrentScreen::StoryDetail => {
+            let story = &app.current_stories.data[app.selected_index];
+            let mut list_items: Vec<ListItem> = vec![];
+            list_items.push(ListItem::new(story.name.to_string()));
+            let body_block = Block::default()
+                .style(Style::default());
+            let body = List::new(list_items)
+                .block(body_block)
+                .style(Style::default().fg(Color::White))
+                .highlight_style(Style::default().bg(Color::White).fg(Color::Black));
+            frame.render_widget(body, layout[0]);
+
             let footer_block = Block::default()
                 .style(Style::default());
             let footer = Paragraph::new(Text::styled(

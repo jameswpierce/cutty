@@ -75,9 +75,15 @@ impl App {
                 KeyCode::Char('k') => {
                     self.prev_story();
                 }
+                KeyCode::Enter => {
+                    self.current_screen = CurrentScreen::StoryDetail;
+                }
                 _ => {}
             }
             CurrentScreen::StoryDetail => match key_event.code {
+                KeyCode::Esc => {
+                    self.current_screen = CurrentScreen::StoriesList;
+                }
                 _ => {}
             }
         };

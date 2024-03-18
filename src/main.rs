@@ -30,19 +30,10 @@ use crate::{
 fn main() -> io::Result<()> {
     let mut terminal = init()?;
     let mut app = App::new();
-    let res = run_app(&mut terminal, &mut app);
+    let res = app.run(&mut terminal);
     restore(&mut terminal)?;
     res?;
     Ok(())
-}
-
-fn run_app(
-    terminal: &mut Tui,
-    app: &mut App,
-) -> io::Result<bool> {
-    loop {
-        app.run(terminal);
-    }
 }
 
 fn init() -> io::Result<Tui> {
