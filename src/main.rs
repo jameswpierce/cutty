@@ -1,4 +1,4 @@
-use std::io::{self, stdout, Stdout};
+use std::io::{self, stdout};
 
 use crossterm::{
     execute,
@@ -14,7 +14,7 @@ use crossterm::{
     },
 };
 use ratatui::{
-    backend::{Backend, CrosstermBackend},
+    backend::{CrosstermBackend},
     Terminal,
 };
 

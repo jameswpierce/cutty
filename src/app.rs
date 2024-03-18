@@ -1,8 +1,8 @@
-use std::io::{self, stdout, Stdout};
+use std::io::{self, Stdout};
 use crate::shortcut::{get_member, MemberInfo, search_stories, StorySearchResults};
 
 use ratatui::{
-    backend::{Backend, CrosstermBackend},
+    backend::{CrosstermBackend},
     Terminal,
 };
 
@@ -81,8 +81,11 @@ impl App {
                 _ => {}
             }
             CurrentScreen::StoryDetail => match key_event.code {
-                KeyCode::Esc => {
+                KeyCode::Char('b') => {
                     self.current_screen = CurrentScreen::StoriesList;
+                }
+                KeyCode::Char('s') => {
+
                 }
                 _ => {}
             }
@@ -94,10 +97,14 @@ impl App {
     }
 
     fn next_story(&mut self) {
-        self.selected_index += 1;
+        if self.selected_index < (self.current_stories.data.len() - 1) {
+            self.selected_index += 1;
+        }
     }
 
     fn prev_story(&mut self) {
-        self.selected_index -= 1;
+        if self.selected_index > 0 {
+            self.selected_index -= 1;
+        }
     }
 }
