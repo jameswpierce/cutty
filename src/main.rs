@@ -1,31 +1,16 @@
 use std::io::{self, stdout};
 
 use crossterm::{
+    event::{DisableMouseCapture, EnableMouseCapture},
     execute,
-    terminal::{
-        enable_raw_mode,
-        disable_raw_mode,
-        EnterAlternateScreen,
-        LeaveAlternateScreen,
-    },
-    event::{
-        EnableMouseCapture,
-        DisableMouseCapture,
-    },
+    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
-use ratatui::{
-    backend::{CrosstermBackend},
-    Terminal,
-};
+use ratatui::{backend::CrosstermBackend, Terminal};
 
 mod app;
-mod ui;
 mod shortcut;
-use crate::{
-    app::{App, Tui},
-};
-
-
+mod ui;
+use crate::app::{App, Tui};
 
 fn main() -> io::Result<()> {
     let mut terminal = init()?;

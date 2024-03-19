@@ -1,23 +1,12 @@
+use crate::shortcut::{
+    get_member, list_workflows, search_stories, MemberInfo, StorySearchResults, Workflow,
+};
 use std::io::{self, Stdout};
-use crate::shortcut::{get_member, MemberInfo, search_stories, StorySearchResults};
 
-use ratatui::{
-    backend::{CrosstermBackend},
-    Terminal,
-};
+use ratatui::{backend::CrosstermBackend, Terminal};
 
-use crossterm::{
-    event::{
-        self,
-        Event,
-        KeyCode,
-        KeyEvent,
-        KeyEventKind,
-    },
-};
-use crate::{
-    ui::ui,
-};
+use crate::ui::ui;
+use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 
 pub type Tui = Terminal<CrosstermBackend<Stdout>>;
 
@@ -30,6 +19,7 @@ pub struct App {
     pub current_screen: CurrentScreen,
     pub current_member: MemberInfo,
     pub current_stories: StorySearchResults,
+    pub workflows: Vec<Workflow>,
     pub selected_index: usize,
     pub exit: bool,
 }
@@ -40,6 +30,7 @@ impl App {
             current_screen: CurrentScreen::StoriesList,
             current_member: get_member(),
             current_stories: search_stories(),
+            workflows: list_workflows(),
             selected_index: 0,
             exit: false,
         }
@@ -79,16 +70,14 @@ impl App {
                     self.current_screen = CurrentScreen::StoryDetail;
                 }
                 _ => {}
-            }
+            },
             CurrentScreen::StoryDetail => match key_event.code {
                 KeyCode::Char('b') => {
                     self.current_screen = CurrentScreen::StoriesList;
                 }
-                KeyCode::Char('s') => {
-
-                }
+                KeyCode::Char('s') => {}
                 _ => {}
-            }
+            },
         };
     }
 
