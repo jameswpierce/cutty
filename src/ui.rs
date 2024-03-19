@@ -26,8 +26,8 @@ pub fn ui(frame: &mut Frame, app: &App) {
             let mut state = ListState::default().with_selected(Some(app.selected_index));
             let body = List::new(list_items)
                 .block(body_block)
-                .style(Style::default().fg(Color::White))
-                .highlight_style(Style::default().bg(Color::White).fg(Color::Black));
+                .style(Style::default().fg(Color::Cyan))
+                .highlight_style(Style::default().bg(Color::DarkGray).fg(Color::Magenta));
             frame.render_stateful_widget(body, layout[0], &mut state);
 
             let footer_block = Block::default().style(Style::default());
@@ -52,10 +52,10 @@ pub fn ui(frame: &mut Frame, app: &App) {
                 .unwrap();
 
             let mut body_lines = vec![
-                Line::from(story.name.to_string()).style(Style::default().fg(Color::Blue)),
-                Line::from(story.app_url.to_string()).style(Style::default().fg(Color::Green)),
-                Line::from(workflow.name.to_string()).style(Style::default().fg(Color::Red)),
-                Line::from(workflow_state.name.to_string()).style(Style::default().fg(Color::Red)),
+                Line::from(story.name.to_string()).style(Style::default().fg(Color::LightBlue)),
+                Line::from(story.app_url.to_string()).style(Style::default().fg(Color::LightGreen)),
+                Line::from(workflow.name.to_string()).style(Style::default().fg(Color::Magenta)),
+                Line::from(workflow_state.name.to_string()).style(Style::default().fg(Color::LightRed)),
             ];
             for line in story.description.split("\n").into_iter() {
                 body_lines.push(Line::from(line.to_string()));
