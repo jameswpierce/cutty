@@ -40,25 +40,31 @@ pub fn ui(frame: &mut Frame, app: &App) {
         }
         CurrentScreen::StoryDetail => {
             let story = &app.current_stories.data[app.selected_index];
-            let workflow_index = &app
+            let workflow = &app
                 .workflows
                 .iter()
-                .position(|workflow| workflow.id == story.workflow_id);
-            let workflow = &app.workflows[workflow_index.unwrap()];
+                .find(|workflow| workflow.id == story.workflow_id)
+                .unwrap();
+            let workflow_state = &workflow
+                .states
+                .iter()
+                .find(|state| state.id == story.workflow_state_id)
+                .unwrap();
 
             let mut body_lines = vec![
                 Line::from(story.name.to_string()).style(Style::default().fg(Color::Blue)),
                 Line::from(story.app_url.to_string()).style(Style::default().fg(Color::Green)),
                 Line::from(workflow.name.to_string()).style(Style::default().fg(Color::Red)),
+                Line::from(workflow_state.name.to_string()).style(Style::default().fg(Color::Red)),
             ];
             for line in story.description.split("\n").into_iter() {
                 body_lines.push(Line::from(line.to_string()));
             }
             let body_block = Block::default().style(Style::default());
             let body = Paragraph::new(body_lines)
-            .wrap(Wrap { trim: false })
-            .scroll((0, 0))
-            .block(body_block);
+                .wrap(Wrap { trim: false })
+                .scroll((app.scroll, 0))
+                .block(body_block);
             frame.render_widget(body, layout[0]);
 
             let footer_block = Block::default().style(Style::default());

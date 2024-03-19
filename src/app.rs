@@ -20,7 +20,9 @@ pub struct App {
     pub current_member: MemberInfo,
     pub current_stories: StorySearchResults,
     pub workflows: Vec<Workflow>,
+    pub scroll: u16,
     pub selected_index: usize,
+    pub story_details_workflow_state_change: bool,
     pub exit: bool,
 }
 
@@ -31,7 +33,9 @@ impl App {
             current_member: get_member(),
             current_stories: search_stories(),
             workflows: list_workflows(),
+            scroll: 0,
             selected_index: 0,
+            story_details_workflow_state_change: false,
             exit: false,
         }
     }
@@ -73,7 +77,16 @@ impl App {
             },
             CurrentScreen::StoryDetail => match key_event.code {
                 KeyCode::Char('b') => {
+                    self.scroll = 0;
                     self.current_screen = CurrentScreen::StoriesList;
+                }
+                KeyCode::Char('j') => {
+                    self.scroll += 1;
+                }
+                KeyCode::Char('k') => {
+                    if self.scroll > 0 {
+                        self.scroll -= 1;
+                    }
                 }
                 KeyCode::Char('s') => {}
                 _ => {}
