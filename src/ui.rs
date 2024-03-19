@@ -46,14 +46,17 @@ pub fn ui(frame: &mut Frame, app: &App) {
                 .position(|workflow| workflow.id == story.workflow_id);
             let workflow = &app.workflows[workflow_index.unwrap()];
 
-            let body_block = Block::default().style(Style::default());
-            let body = Paragraph::new(vec![
+            let mut body_lines = vec![
                 Line::from(story.name.to_string()).style(Style::default().fg(Color::Blue)),
                 Line::from(story.app_url.to_string()).style(Style::default().fg(Color::Green)),
                 Line::from(workflow.name.to_string()).style(Style::default().fg(Color::Red)),
-                Line::from(story.description.to_string()),
-            ])
-            .wrap(Wrap { trim: true })
+            ];
+            for line in story.description.split("\n").into_iter() {
+                body_lines.push(Line::from(line.to_string()));
+            }
+            let body_block = Block::default().style(Style::default());
+            let body = Paragraph::new(body_lines)
+            .wrap(Wrap { trim: false })
             .scroll((0, 0))
             .block(body_block);
             frame.render_widget(body, layout[0]);
