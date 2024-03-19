@@ -3,7 +3,6 @@ use std::env;
 use chrono::{DateTime, Utc};
 
 use serde::Deserialize;
-use serde_json::value::Number;
 
 #[derive(Deserialize, Debug)]
 pub struct LinkedFile {
@@ -12,12 +11,12 @@ pub struct LinkedFile {
     pub description: Option<String>,
     pub entity_type: String,
     pub group_mention_ids: Vec<String>,
-    pub id: Number,
+    pub id: usize,
     pub member_mention_ids: Vec<String>,
     pub mention_ids: Vec<String>,
     pub name: String,
-    pub size: Option<Number>,
-    pub story_ids: Vec<Number>,
+    pub size: Option<usize>,
+    pub story_ids: Vec<usize>,
     pub thumbnail_url: Option<String>,
     #[serde(rename = "type")]
     pub linked_file_type: String,
@@ -30,9 +29,9 @@ pub struct LinkedFile {
 pub struct TypedStoryLink {
     pub created_at: DateTime<Utc>,
     pub entity_type: String,
-    pub id: Number,
-    pub object_id: Number,
-    pub subject_id: Number,
+    pub id: usize,
+    pub object_id: usize,
+    pub subject_id: usize,
     pub updated_at: DateTime<Utc>,
     #[serde(rename = "type")]
     pub story_type: String,
@@ -41,7 +40,7 @@ pub struct TypedStoryLink {
 
 #[derive(Deserialize, Debug)]
 pub struct StoryStats {
-    pub num_related_documents: Number,
+    pub num_related_documents: usize,
 }
 
 #[derive(Deserialize, Debug)]
@@ -59,12 +58,12 @@ pub struct Task {
     pub entity_type: String,
     pub external_id: Option<String>,
     pub group_mention_ids: Vec<String>,
-    pub id: Number,
-    pub member_mention_ids: Vec<Number>,
-    pub mention_ids: Vec<Number>,
-    pub owner_ids: Vec<Number>,
-    pub position: Number,
-    pub story_id: Number,
+    pub id: usize,
+    pub member_mention_ids: Vec<usize>,
+    pub mention_ids: Vec<usize>,
+    pub owner_ids: Vec<usize>,
+    pub position: usize,
+    pub story_id: usize,
     pub updated_at: Option<DateTime<Utc>>,
 }
 
@@ -77,7 +76,7 @@ pub struct LabelSlim {
     pub description: Option<String>,
     pub entity_type: String,
     pub external_id: Option<String>,
-    pub id: Number,
+    pub id: usize,
     pub name: String,
     pub updated_at: Option<DateTime<Utc>>,
 }
@@ -87,18 +86,18 @@ pub struct Branch {
     pub created_at: Option<DateTime<Utc>>,
     pub deleted: bool,
     pub entity_type: String,
-    pub id: Option<Number>,
-    pub merged_branch_ids: Vec<Number>,
+    pub id: Option<usize>,
+    pub merged_branch_ids: Vec<usize>,
     pub name: String,
     pub persistent: bool,
     pub pull_requests: Vec<PullRequest>,
-    pub repository_id: Number,
+    pub repository_id: usize,
     pub updated_at: Option<DateTime<Utc>>,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct PullRequest {
-    pub branch_id: Number,
+    pub branch_id: usize,
     pub branch_name: String,
     pub build_status: Option<String>,
     pub closed: bool,
@@ -106,17 +105,17 @@ pub struct PullRequest {
     pub draft: bool,
     pub entity_type: String,
     pub has_overlapping_stories: bool,
-    pub id: Number,
+    pub id: usize,
     pub merged: bool,
-    pub num_added: Number,
-    pub num_commits: Option<Number>,
-    pub num_modified: Option<Number>,
-    pub num_removed: Option<Number>,
-    pub number: Number,
-    pub overlapping_stories: Vec<Number>,
-    pub repository_id: Number,
+    pub num_added: usize,
+    pub num_commits: Option<usize>,
+    pub num_modified: Option<usize>,
+    pub num_removed: Option<usize>,
+    pub number: usize,
+    pub overlapping_stories: Vec<usize>,
+    pub repository_id: usize,
     pub review_status: String,
-    pub target_branch_id: Number,
+    pub target_branch_id: usize,
     pub target_branch_name: String,
     pub title: String,
     pub updated_at: DateTime<Utc>,
@@ -129,7 +128,7 @@ pub struct PullRequestLabel {
     pub color: String, // Color
     pub description: Option<String>,
     pub entity_type: String,
-    pub id: Number,
+    pub id: usize,
     pub name: String,
 }
 
@@ -143,7 +142,7 @@ pub struct MemberInfo {
 
 #[derive(Deserialize, Debug)]
 pub struct BasicWorkspaceInfo {
-    pub estimate_scale: Vec<Number>,
+    pub estimate_scale: Vec<usize>,
     pub url_slug: String,
 }
 
@@ -151,7 +150,7 @@ pub struct BasicWorkspaceInfo {
 pub struct StorySearchResults {
     pub data: Vec<StorySearchResult>,
     pub next: Option<String>,
-    pub total: Number,
+    pub total: usize,
 }
 
 #[derive(Deserialize, Debug)]
@@ -171,12 +170,12 @@ pub struct StoryComment {
     pub entity_type: String,
     pub external_id: Option<String>,
     pub group_mention_ids: Vec<String>,
-    pub id: Number,
+    pub id: usize,
     pub member_mention_ids: Vec<String>,
     pub mention_ids: Vec<String>,
-    pub parent_id: Option<Number>,
-    pub position: Number,
-    pub story_id: Number,
+    pub parent_id: Option<usize>,
+    pub position: usize,
+    pub story_id: usize,
     pub text: Option<String>,
     pub unblocks_parent: Option<bool>,
     pub updated_at: Option<DateTime<Utc>>,
@@ -190,9 +189,9 @@ pub struct Commit {
     pub created_at: DateTime<Utc>,
     pub entity_type: String,
     pub hash: String,
-    pub id: Option<Number>,
+    pub id: Option<usize>,
     pub message: String,
-    pub repository_id: Option<Number>,
+    pub repository_id: Option<usize>,
     pub timestamp: DateTime<Utc>,
     pub updated_at: Option<DateTime<Utc>>,
     pub url: String,
@@ -214,12 +213,12 @@ pub struct UploadedFile {
     pub external_id: Option<String>,
     pub filename: String,
     pub group_mention_ids: Vec<String>,
-    pub id: Number,
+    pub id: usize,
     pub member_mention_ids: Vec<String>,
     pub mention_ids: Vec<String>,
     pub name: String,
-    pub size: Number,
-    pub story_ids: Vec<Number>,
+    pub size: usize,
+    pub story_ids: Vec<usize>,
     pub thumbnail_url: Option<String>,
     pub updated_at: Option<DateTime<Utc>>,
     pub uploader_id: String,
@@ -233,7 +232,7 @@ pub struct StorySearchResult {
     pub blocked: bool,
     pub blocker: Option<bool>,
     pub branches: Vec<Branch>,
-    pub comment_ids: Option<Vec<Number>>,
+    pub comment_ids: Option<Vec<usize>>,
     pub comments: Vec<StoryComment>,
     pub commits: Vec<Commit>,
     pub completed: bool,
@@ -241,35 +240,35 @@ pub struct StorySearchResult {
     pub completed_at_override: Option<DateTime<Utc>>,
     pub created_at: DateTime<Utc>,
     pub custom_fields: Vec<StoryCustomField>,
-    pub cycle_time: Option<Number>,
+    pub cycle_time: Option<usize>,
     pub deadline: Option<DateTime<Utc>>,
     pub description: String,
     pub entity_type: String,
-    pub epic_id: Option<Number>,
-    pub estimate: Option<Number>,
+    pub epic_id: Option<usize>,
+    pub estimate: Option<usize>,
     pub external_id: Option<String>,
     pub external_links: Vec<String>,
-    pub file_ids: Option<Vec<Number>>,
+    pub file_ids: Option<Vec<usize>>,
     pub files: Vec<UploadedFile>,
     pub follower_ids: Vec<String>,
     pub group_id: Option<String>,
     pub group_mention_ids: Vec<String>,
-    pub id: Number,
-    pub iteration_id: Option<Number>,
-    pub label_ids: Vec<Number>,
+    pub id: usize,
+    pub iteration_id: Option<usize>,
+    pub label_ids: Vec<usize>,
     pub labels: Vec<LabelSlim>,
-    pub lead_time: Option<Number>,
-    pub linked_file_ids: Option<Vec<Number>>,
+    pub lead_time: Option<usize>,
+    pub linked_file_ids: Option<Vec<usize>>,
     pub linked_files: Vec<LinkedFile>,
     pub member_mention_ids: Vec<String>,
     pub mention_ids: Vec<String>,
     pub moved_at: Option<DateTime<Utc>>,
     pub name: String,
-    pub num_tasks_completed: Option<Number>,
+    pub num_tasks_completed: Option<usize>,
     pub owner_ids: Vec<String>,
-    pub position: Number,
-    pub previous_iteration_ids: Vec<Number>,
-    pub project_id: Option<Number>,
+    pub position: usize,
+    pub previous_iteration_ids: Vec<usize>,
+    pub project_id: Option<usize>,
     pub pull_requests: Vec<PullRequest>,
     pub requested_by_id: String,
     pub started: bool,
@@ -279,26 +278,26 @@ pub struct StorySearchResult {
     pub story_template_id: Option<String>,
     pub story_type: String,
     pub synced_item: Option<SyncedItem>,
-    pub task_ids: Option<Vec<Number>>,
+    pub task_ids: Option<Vec<usize>>,
     pub tasks: Vec<Task>,
-    pub unresolved_blocker_comments: Option<Vec<Number>>,
+    pub unresolved_blocker_comments: Option<Vec<usize>>,
     pub updated_at: Option<DateTime<Utc>>,
-    pub workflow_id: Number,
-    pub workflow_state_id: Number,
+    pub workflow_id: usize,
+    pub workflow_state_id: usize,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct Workflow {
     pub auto_assign_owner: bool,
     pub created_at: DateTime<Utc>,
-    pub default_state_id: Number,
+    pub default_state_id: usize,
     pub description: String,
     pub entity_type: String,
-    pub id: Number,
+    pub id: usize,
     pub name: String,
-    pub project_ids: Vec<Number>,
+    pub project_ids: Vec<usize>,
     pub states: Vec<WorkflowState>,
-    pub team_id: Number,
+    pub team_id: usize,
     pub updated_at: DateTime<Utc>,
 }
 
@@ -308,11 +307,11 @@ pub struct WorkflowState {
     pub created_at: DateTime<Utc>,
     pub description: String,
     pub entity_type: String,
-    pub id: Number,
+    pub id: usize,
     pub name: String,
-    pub num_stories: Number,
-    pub num_story_templates: Number,
-    pub position: Number,
+    pub num_stories: usize,
+    pub num_story_templates: usize,
+    pub position: usize,
     #[serde(rename = "type")]
     pub workflow_state_type: String,
     pub updated_at: DateTime<Utc>,
@@ -350,7 +349,8 @@ pub fn search_stories() -> StorySearchResults {
 pub fn list_workflows() -> Vec<Workflow> {
     let token = env::var("SHORTCUT_TOKEN").expect("$SHORTCUT_TOKEN is not set");
     let client = reqwest::blocking::Client::new();
-    let result = client.get("https://api.app.shortcut.com/api/v3/workflows")
+    let result = client
+        .get("https://api.app.shortcut.com/api/v3/workflows")
         .header("Content-Type", "application/json")
         .header("Shortcut-Token", token)
         .send()

@@ -1,8 +1,8 @@
 use ratatui::{
     layout::{Constraint, Direction, Layout},
+    prelude::Line,
     style::{Color, Style},
-    prelude::{Line},
-    text::{Text},
+    text::Text,
     widgets::{Block, List, ListItem, ListState, Paragraph, Wrap},
     Frame,
 };
@@ -40,11 +40,17 @@ pub fn ui(frame: &mut Frame, app: &App) {
         }
         CurrentScreen::StoryDetail => {
             let story = &app.current_stories.data[app.selected_index];
+            let workflow_index = &app
+                .workflows
+                .iter()
+                .position(|workflow| workflow.id == story.workflow_id);
+            let workflow = &app.workflows[workflow_index.unwrap()];
 
             let body_block = Block::default().style(Style::default());
             let body = Paragraph::new(vec![
                 Line::from(story.name.to_string()).style(Style::default().fg(Color::Blue)),
                 Line::from(story.app_url.to_string()).style(Style::default().fg(Color::Green)),
+                Line::from(workflow.name.to_string()).style(Style::default().fg(Color::Red)),
                 Line::from(story.description.to_string()),
             ])
             .wrap(Wrap { trim: true })
