@@ -1,5 +1,6 @@
 use crate::shortcut::{
-    get_member, list_workflows, search_stories, MemberInfo, StorySearchResults, Workflow,
+    get_member, list_workflows, search_epics, search_stories, EpicSearchResults, MemberInfo,
+    StorySearchResults, Workflow,
 };
 use std::io::{self, Stdout};
 
@@ -11,12 +12,14 @@ use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 pub type Tui = Terminal<CrosstermBackend<Stdout>>;
 
 pub enum CurrentScreen {
+    EpicsList,
     StoriesList,
     StoryDetail,
 }
 
 pub struct App {
     pub current_screen: CurrentScreen,
+    pub current_epics: EpicSearchResults,
     pub current_member: MemberInfo,
     pub current_stories: StorySearchResults,
     pub workflows: Vec<Workflow>,
@@ -30,6 +33,7 @@ impl App {
     pub fn new() -> App {
         App {
             current_screen: CurrentScreen::StoriesList,
+            current_epics: search_epics(),
             current_member: get_member(),
             current_stories: search_stories(),
             workflows: list_workflows(),
@@ -60,6 +64,27 @@ impl App {
 
     fn handle_key_event(&mut self, key_event: KeyEvent) {
         match self.current_screen {
+            CurrentScreen::EpicsList => match key_event.code {
+                KeyCode::Char('q') => {
+                    self.exit();
+                }
+                KeyCode::Char('j') => {
+                    self.next_story();
+                }
+                KeyCode::Char('k') => {
+                    self.prev_story();
+                }
+                KeyCode::Char('r') => {
+                    self.current_epics = search_epics();
+                }
+                KeyCode::Char('s') => {
+                    self.current_screen = CurrentScreen::StoriesList;
+                }
+                KeyCode::Enter => {
+                    self.current_screen = CurrentScreen::StoryDetail;
+                }
+                _ => {}
+            },
             CurrentScreen::StoriesList => match key_event.code {
                 KeyCode::Char('q') => {
                     self.exit();
@@ -72,6 +97,9 @@ impl App {
                 }
                 KeyCode::Char('r') => {
                     self.current_stories = search_stories();
+                }
+                KeyCode::Char('e') => {
+                    self.current_screen = CurrentScreen::EpicsList;
                 }
                 KeyCode::Enter => {
                     self.current_screen = CurrentScreen::StoryDetail;
