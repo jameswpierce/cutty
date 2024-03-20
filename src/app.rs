@@ -70,6 +70,9 @@ impl App {
                 KeyCode::Char('k') => {
                     self.prev_story();
                 }
+                KeyCode::Char('r') => {
+                    self.current_stories = search_stories();
+                }
                 KeyCode::Enter => {
                     self.current_screen = CurrentScreen::StoryDetail;
                 }

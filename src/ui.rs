@@ -32,7 +32,7 @@ pub fn ui(frame: &mut Frame, app: &App) {
 
             let footer_block = Block::default().style(Style::default());
             let footer = Paragraph::new(Text::styled(
-                format!("cutty 0.1.0 | @{}", app.current_member.mention_name),
+                format!("cutty 0.1.0 | @{} | [q]uit | [r]efresh | [Enter] Open story", app.current_member.mention_name),
                 Style::default().fg(Color::LightBlue),
             ))
             .block(footer_block);
@@ -69,7 +69,7 @@ pub fn ui(frame: &mut Frame, app: &App) {
 
             let footer_block = Block::default().style(Style::default());
             let footer = Paragraph::new(Text::styled(
-                format!("cutty 0.1.0 | @{}", app.current_member.mention_name),
+                format!("cutty 0.1.0 | @{} | [b]ack | update [s]tate", app.current_member.mention_name),
                 Style::default().fg(Color::LightBlue),
             ))
             .block(footer_block);
