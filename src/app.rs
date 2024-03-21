@@ -1,5 +1,5 @@
 use crate::shortcut::{
-    get_member, list_workflows, search_epics, search_stories, EpicSearchResults, MemberInfo,
+    get_current_member, list_workflows, search_epics, search_stories, EpicSearchResults, MemberInfo,
     StorySearchResults, Workflow,
 };
 use std::io::{self, Stdout};
@@ -34,7 +34,7 @@ impl App {
         App {
             current_screen: CurrentScreen::StoriesList,
             current_epics: search_epics(),
-            current_member: get_member(),
+            current_member: get_current_member(),
             current_stories: search_stories(),
             workflows: list_workflows(),
             scroll: 0,

@@ -234,6 +234,42 @@ pub struct MemberInfo {
 }
 
 #[derive(Deserialize, Debug)]
+pub struct Member {
+    pub created_at: Option<DateTime<Utc>>,
+    pub disabled: Option<bool>,
+    pub entity_type: Option<String>,
+    pub group_ids: Option<Vec<String>>,
+    pub id: String,
+    pub profile: Profile,
+    pub role: String,
+    pub state: String, // enum (disabled, full, imported, partial)
+    pub updated_at: Option<DateTime<Utc>>,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct Profile {
+    pub deactivated: bool,
+    pub display_icon: Option<Icon>,
+    pub email_address: Option<String>,
+    pub entity_type: String,
+    pub gravatar_hash: Option<String>,
+    pub id: String,
+    pub is_owner: bool,
+    pub mention_name: String,
+    pub name: Option<String>,
+    pub two_factor_auth_activated: bool,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct Icon {
+    pub created_at: DateTime<Utc>,
+    pub entity_type: String,
+    pub id: String,
+    pub updated_at: DateTime<Utc>,
+    pub url: String,
+}
+
+#[derive(Deserialize, Debug)]
 pub struct BasicWorkspaceInfo {
     pub estimate_scale: Vec<usize>,
     pub url_slug: String,
@@ -256,6 +292,7 @@ pub struct Identity {
 #[derive(Deserialize, Debug)]
 pub struct StoryComment {
     pub app_url: String,
+    pub author: Option<Member>,
     pub author_id: Option<String>,
     pub blocker: Option<bool>, // optional booleans humph
     pub created_at: DateTime<Utc>,
@@ -272,6 +309,21 @@ pub struct StoryComment {
     pub text: Option<String>,
     pub unblocks_parent: Option<bool>,
     pub updated_at: Option<DateTime<Utc>>,
+}
+
+impl StoryComment {
+    pub fn author(self: &mut Self) -> Option<Member> {
+        match &self.author {
+            None => {
+                let member: Member = get_member(self.author_id.clone().unwrap());
+                self.author = Some(member);
+                self.author
+            }
+            Some(member) => {
+                self.author
+            }
+        }
+    }
 }
 
 #[derive(Deserialize, Debug)]
@@ -411,7 +463,21 @@ pub struct WorkflowState {
     pub verb: Option<String>,
 }
 
-pub fn get_member() -> MemberInfo {
+pub fn get_member(id: String) -> Member {
+    let token = env::var("SHORTCUT_TOKEN").expect("$SHORTCUT_TOKEN is not set");
+    let client = reqwest::blocking::Client::new();
+    let result = client
+        .get(format!("https://api.app.shortcut.com/api/v3/members/{}", id))
+        .header("Content-Type", "application/json")
+        .header("Shortcut-Token", token)
+        .send()
+        .expect("request failed");
+
+    let json = result.json::<Member>();
+    return json.expect("Somethin else happended");
+}
+
+pub fn get_current_member() -> MemberInfo {
     let token = env::var("SHORTCUT_TOKEN").expect("$SHORTCUT_TOKEN is not set");
     let client = reqwest::blocking::Client::new();
     let result = client

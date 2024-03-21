@@ -89,6 +89,19 @@ pub fn ui(frame: &mut Frame, app: &App) {
             for line in story.description.split("\n").into_iter() {
                 body_lines.push(Line::from(line.to_string()));
             }
+            for comment in &story.comments {
+                body_lines.push(Line::from(comment.created_at.to_string()));
+                body_lines.push(Line::from(comment.author.as_ref().unwrap().profile.mention_name.to_string()));
+                match &comment.text {
+                    Some(text) => {
+                        for line in text.split("\n").into_iter() {
+                            body_lines.push(Line::from(line.to_string()));
+                        }
+                    }
+                    None => ()
+                }
+                body_lines.push(Line::from("-----------------------------"));
+            }
             let body_block = Block::default().style(Style::default());
             let body = Paragraph::new(body_lines)
                 .wrap(Wrap { trim: false })
