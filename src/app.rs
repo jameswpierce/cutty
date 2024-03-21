@@ -69,15 +69,16 @@ impl App {
                     self.exit();
                 }
                 KeyCode::Char('j') => {
-                    self.next_story();
+                    self.next_list_item();
                 }
                 KeyCode::Char('k') => {
-                    self.prev_story();
+                    self.prev_list_item();
                 }
                 KeyCode::Char('r') => {
                     self.current_epics = search_epics();
                 }
                 KeyCode::Char('s') => {
+                    self.selected_index = 0;
                     self.current_screen = CurrentScreen::StoriesList;
                 }
                 KeyCode::Enter => {
@@ -90,15 +91,16 @@ impl App {
                     self.exit();
                 }
                 KeyCode::Char('j') => {
-                    self.next_story();
+                    self.next_list_item();
                 }
                 KeyCode::Char('k') => {
-                    self.prev_story();
+                    self.prev_list_item();
                 }
                 KeyCode::Char('r') => {
                     self.current_stories = search_stories();
                 }
                 KeyCode::Char('e') => {
+                    self.selected_index = 0;
                     self.current_screen = CurrentScreen::EpicsList;
                 }
                 KeyCode::Enter => {
@@ -129,13 +131,13 @@ impl App {
         self.exit = true;
     }
 
-    fn next_story(&mut self) {
+    fn next_list_item(&mut self) {
         if self.selected_index < (self.current_stories.data.len() - 1) {
             self.selected_index += 1;
         }
     }
 
-    fn prev_story(&mut self) {
+    fn prev_list_item(&mut self) {
         if self.selected_index > 0 {
             self.selected_index -= 1;
         }
