@@ -1,6 +1,6 @@
 use crate::shortcut::{
-    get_current_member, list_workflows, search_epics, search_stories, EpicSearchResults, MemberInfo,
-    StorySearchResults, Workflow,
+    get_current_member, list_members, list_workflows, search_epics, search_stories,
+    EpicSearchResults, Member, MemberInfo, StorySearchResults, Workflow,
 };
 use std::io::{self, Stdout};
 
@@ -22,6 +22,7 @@ pub struct App {
     pub current_epics: EpicSearchResults,
     pub current_member: MemberInfo,
     pub current_stories: StorySearchResults,
+    pub members: Vec<Member>,
     pub workflows: Vec<Workflow>,
     pub scroll: u16,
     pub selected_index: usize,
@@ -33,9 +34,22 @@ impl App {
     pub fn new() -> App {
         App {
             current_screen: CurrentScreen::StoriesList,
-            current_epics: search_epics(),
-            current_member: get_current_member(),
-            current_stories: search_stories(),
+            current_epics: match search_epics() {
+                Ok(current_epics) => current_epics,
+                Err(_error) => panic!("ERROR FETCHING EPICS"),
+            },
+            current_member: match get_current_member() {
+                Ok(current_member) => current_member,
+                Err(_error) => panic!("NO CURRENT MEMBER"),
+            },
+            current_stories: match search_stories() {
+                Ok(current_stories) => current_stories,
+                Err(_error) => panic!("ERROR FETCHING STORIES"),
+            },
+            members: match list_members() {
+                Ok(members) => members,
+                Err(_error) => panic!("NO MEMBBERS {}", _error),
+            },
             workflows: list_workflows(),
             scroll: 0,
             selected_index: 0,
@@ -75,7 +89,10 @@ impl App {
                     self.prev_list_item();
                 }
                 KeyCode::Char('r') => {
-                    self.current_epics = search_epics();
+                    self.current_epics = match search_epics() {
+                        Ok(current_epics) => current_epics,
+                        Err(_error) => panic!("ERROR FETCHING EPICS"),
+                    };
                 }
                 KeyCode::Char('s') => {
                     self.selected_index = 0;
@@ -97,7 +114,10 @@ impl App {
                     self.prev_list_item();
                 }
                 KeyCode::Char('r') => {
-                    self.current_stories = search_stories();
+                    self.current_stories = match search_stories() {
+                        Ok(current_stories) => current_stories,
+                        Err(_error) => panic!("ERROR FETCHING STORIES"),
+                    }
                 }
                 KeyCode::Char('e') => {
                     self.selected_index = 0;

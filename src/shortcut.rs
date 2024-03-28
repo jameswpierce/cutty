@@ -257,7 +257,7 @@ pub struct Profile {
     pub is_owner: bool,
     pub mention_name: String,
     pub name: Option<String>,
-    pub two_factor_auth_activated: bool,
+    pub two_factor_auth_activated: Option<bool>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -292,7 +292,6 @@ pub struct Identity {
 #[derive(Deserialize, Debug)]
 pub struct StoryComment {
     pub app_url: String,
-    pub author: Option<Member>,
     pub author_id: Option<String>,
     pub blocker: Option<bool>, // optional booleans humph
     pub created_at: DateTime<Utc>,
@@ -311,20 +310,21 @@ pub struct StoryComment {
     pub updated_at: Option<DateTime<Utc>>,
 }
 
-impl StoryComment {
-    pub fn author(self: &mut Self) -> Option<Member> {
-        match &self.author {
-            None => {
-                let member: Member = get_member(self.author_id.clone().unwrap());
-                self.author = Some(member);
-                self.author
-            }
-            Some(member) => {
-                self.author
-            }
-        }
-    }
-}
+// impl StoryComment {
+//     pub fn author(&self, members: &Vec<Member>) -> Option<&Member> {
+//         let author = match &self.author_id {
+//             Some(author_id) => {
+//                 let member = members
+//                     .iter()
+//                     .find(|member| author_id == &member.id)
+//                     .unwrap();
+//                 Some(member)
+//             }
+//             None => None,
+//         };
+//         author
+//     }
+// }
 
 #[derive(Deserialize, Debug)]
 pub struct Commit {
@@ -463,11 +463,14 @@ pub struct WorkflowState {
     pub verb: Option<String>,
 }
 
-pub fn get_member(id: String) -> Member {
+pub fn get_member(id: &String) -> Member {
     let token = env::var("SHORTCUT_TOKEN").expect("$SHORTCUT_TOKEN is not set");
     let client = reqwest::blocking::Client::new();
     let result = client
-        .get(format!("https://api.app.shortcut.com/api/v3/members/{}", id))
+        .get(format!(
+            "https://api.app.shortcut.com/api/v3/members/{}",
+            id
+        ))
         .header("Content-Type", "application/json")
         .header("Shortcut-Token", token)
         .send()
@@ -477,46 +480,56 @@ pub fn get_member(id: String) -> Member {
     return json.expect("Somethin else happended");
 }
 
-pub fn get_current_member() -> MemberInfo {
+pub fn list_members() -> Result<Vec<Member>, reqwest::Error> {
+    let token = env::var("SHORTCUT_TOKEN").expect("$SHORTCUT_TOKEN is not set");
+    let client = reqwest::blocking::Client::new();
+    let result = client
+        .get("https://api.app.shortcut.com/api/v3/members")
+        .header("Content-Type", "application/json")
+        .header("Shortcut-Token", token)
+        .send()?;
+
+    let json = result.json::<Vec<Member>>();
+    json
+}
+
+pub fn get_current_member() -> Result<MemberInfo, reqwest::Error> {
     let token = env::var("SHORTCUT_TOKEN").expect("$SHORTCUT_TOKEN is not set");
     let client = reqwest::blocking::Client::new();
     let result = client
         .get("https://api.app.shortcut.com/api/v3/member")
         .header("Content-Type", "application/json")
         .header("Shortcut-Token", token)
-        .send()
-        .expect("request failed");
+        .send()?;
 
     let json = result.json::<MemberInfo>();
-    return json.expect("Somethin else happended");
+    json
 }
 
-pub fn search_epics() -> EpicSearchResults {
+pub fn search_epics() -> Result<EpicSearchResults, reqwest::Error> {
     let token = env::var("SHORTCUT_TOKEN").expect("$SHORTCUT_TOKEN is not set");
     let client = reqwest::blocking::Client::new();
     let result = client.get("https://api.app.shortcut.com/api/v3/search/epics")
         .header("Content-Type", "application/json")
         .header("Shortcut-Token", token)
         .body("{\"detail\": \"full\", \"page_size\": 25, \"query\": \"owner:jamespierce !state:completed !is:archived\"}")
-        .send()
-        .expect("request failed");
+        .send()?;
 
     let json = result.json::<EpicSearchResults>();
-    return json.expect("Somethin else happended");
+    json
 }
 
-pub fn search_stories() -> StorySearchResults {
+pub fn search_stories() -> Result<StorySearchResults, reqwest::Error> {
     let token = env::var("SHORTCUT_TOKEN").expect("$SHORTCUT_TOKEN is not set");
     let client = reqwest::blocking::Client::new();
     let result = client.get("https://api.app.shortcut.com/api/v3/search/stories")
         .header("Content-Type", "application/json")
         .header("Shortcut-Token", token)
         .body("{\"detail\": \"full\", \"page_size\": 25, \"query\": \"owner:jamespierce !state:completed !is:archived\"}")
-        .send()
-        .expect("request failed");
+        .send()?;
 
     let json = result.json::<StorySearchResults>();
-    return json.expect("Somethin else happended");
+    json
 }
 
 pub fn list_workflows() -> Vec<Workflow> {
