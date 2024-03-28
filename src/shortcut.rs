@@ -310,21 +310,6 @@ pub struct StoryComment {
     pub updated_at: Option<DateTime<Utc>>,
 }
 
-// impl StoryComment {
-//     pub fn author(&self, members: &Vec<Member>) -> Option<&Member> {
-//         let author = match &self.author_id {
-//             Some(author_id) => {
-//                 let member = members
-//                     .iter()
-//                     .find(|member| author_id == &member.id)
-//                     .unwrap();
-//                 Some(member)
-//             }
-//             None => None,
-//         };
-//         author
-//     }
-// }
 
 #[derive(Deserialize, Debug)]
 pub struct Commit {
