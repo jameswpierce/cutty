@@ -310,7 +310,6 @@ pub struct StoryComment {
     pub updated_at: Option<DateTime<Utc>>,
 }
 
-
 #[derive(Deserialize, Debug)]
 pub struct Commit {
     pub author_email: String,

@@ -93,15 +93,15 @@ pub fn ui(frame: &mut Frame, app: &App) {
                 body_lines.push(Line::from(comment.created_at.to_string()));
                 match &comment.author_id {
                     Some(author_id) => {
-                        let author = &app.members
+                        let author = &app
+                            .members
                             .iter()
                             .find(|member| author_id == &member.id)
                             .unwrap();
                         body_lines.push(Line::from(author.profile.mention_name.to_string()));
-                    },
-                    None => ()
+                    }
+                    None => (),
                 }
-                // body_lines.push(Line::from(author.profile.mention_name));
                 match &comment.text {
                     Some(text) => {
                         for line in text.split("\n").into_iter() {
