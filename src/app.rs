@@ -21,7 +21,7 @@ pub struct App {
     pub current_screen: CurrentScreen,
     pub current_epics: EpicSearchResults,
     pub current_member: MemberInfo,
-    pub current_stories: StorySearchResults,
+    pub current_stories: Option<StorySearchResults>,
     pub members: Vec<Member>,
     pub workflows: Vec<Workflow>,
     pub scroll: u16,
@@ -42,9 +42,9 @@ impl App {
                 Ok(current_member) => current_member,
                 Err(_error) => panic!("NO CURRENT MEMBER"),
             },
-            current_stories: match search_stories() {
-                Ok(current_stories) => current_stories,
-                Err(_error) => panic!("ERROR FETCHING STORIES"),
+            current_stories: match search_stories("owner:jamespierce !state:resolved !state:completed !is:archived") {
+                Ok(current_stories) => Some(current_stories),
+                Err(_error) => None
             },
             members: match list_members() {
                 Ok(members) => members,
@@ -114,9 +114,9 @@ impl App {
                     self.prev_list_item();
                 }
                 KeyCode::Char('r') => {
-                    self.current_stories = match search_stories() {
-                        Ok(current_stories) => current_stories,
-                        Err(_error) => panic!("ERROR FETCHING STORIES"),
+                    self.current_stories = match search_stories("owner:jamespierce !state:resolved !state:completed !is:archived") {
+                        Ok(current_stories) => Some(current_stories),
+                        Err(_error) => None
                     }
                 }
                 KeyCode::Char('e') => {
@@ -152,8 +152,13 @@ impl App {
     }
 
     fn next_list_item(&mut self) {
-        if self.selected_index < (self.current_stories.data.len() - 1) {
-            self.selected_index += 1;
+        match &self.current_stories {
+            Some(stories) => {
+                if self.selected_index < (stories.data.len() - 1) {
+                    self.selected_index += 1;
+                }
+            },
+            None => ()
         }
     }
 

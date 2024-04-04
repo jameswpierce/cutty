@@ -503,13 +503,13 @@ pub fn search_epics() -> Result<EpicSearchResults, reqwest::Error> {
     json
 }
 
-pub fn search_stories() -> Result<StorySearchResults, reqwest::Error> {
+pub fn search_stories(query: &str) -> Result<StorySearchResults, reqwest::Error> {
     let token = env::var("SHORTCUT_TOKEN").expect("$SHORTCUT_TOKEN is not set");
     let client = reqwest::blocking::Client::new();
     let result = client.get("https://api.app.shortcut.com/api/v3/search/stories")
         .header("Content-Type", "application/json")
         .header("Shortcut-Token", token)
-        .body("{\"detail\": \"full\", \"page_size\": 25, \"query\": \"owner:jamespierce !state:completed !is:archived\"}")
+        .body(format!("{{\"detail\": \"full\", \"page_size\": 25, \"query\": \"{}\"}}", query))
         .send()?;
 
     let json = result.json::<StorySearchResults>();
