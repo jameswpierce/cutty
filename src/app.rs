@@ -141,7 +141,9 @@ impl App {
                         self.scroll -= 1;
                     }
                 }
-                KeyCode::Char('s') => {}
+                KeyCode::Char('s') => {
+                    self.story_details_workflow_state_change = !self.story_details_workflow_state_change;
+                }
                 _ => {}
             },
         };

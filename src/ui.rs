@@ -3,7 +3,7 @@ use ratatui::{
     prelude::Line,
     style::{Color, Style},
     text::Text,
-    widgets::{Block, List, ListItem, ListState, Paragraph, Wrap},
+    widgets::{Block, Clear, List, ListItem, ListState, Paragraph, Wrap},
     Frame,
 };
 
@@ -85,6 +85,20 @@ pub fn ui(frame: &mut Frame, app: &App) {
                         .iter()
                         .find(|state| state.id == story.workflow_state_id)
                         .unwrap();
+
+                    if app.story_details_workflow_state_change {
+                        let popup = Block::default()
+                            .title("Change Workflow State");
+                        let mut list_items: Vec<ListItem> = vec![];
+                        let mut state = ListState::default().with_selected(Some(app.selected_index));
+                        for workflow_state in &workflow.states {
+                            list_items.push(ListItem::new(workflow_state.name.to_string()));
+                        }
+                        let body = List::new(list_items)
+                            .block(popup);
+                        frame.render_widget(Clear, layout[0]);
+                        frame.render_stateful_widget(body, layout[0], &mut state);
+                    }
 
                     let mut body_lines = vec![
                         Line::from(story.name.to_string()).style(Style::default().fg(Color::LightBlue)),
