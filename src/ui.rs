@@ -17,29 +17,49 @@ pub fn ui(frame: &mut Frame, app: &App) {
 
     match app.current_screen {
         CurrentScreen::EpicsList => {
-            let epics = &app.current_epics.data;
-            let mut list_items: Vec<ListItem> = vec![];
-            for epic in epics.into_iter() {
-                list_items.push(ListItem::new(epic.name.to_string()))
-            }
-            let body_block = Block::default().style(Style::default());
-            let mut state = ListState::default().with_selected(Some(app.selected_index));
-            let body = List::new(list_items)
-                .block(body_block)
-                .style(Style::default().fg(Color::Cyan))
-                .highlight_style(Style::default().bg(Color::DarkGray).fg(Color::Magenta));
-            frame.render_stateful_widget(body, layout[0], &mut state);
+            match &app.current_epics {
+                Some(epics) => {
+                    let epics = &epics.data;
+                    let mut list_items: Vec<ListItem> = vec![];
+                    for epic in epics.into_iter() {
+                        list_items.push(ListItem::new(epic.name.to_string()))
+                    }
+                    let body_block = Block::default().style(Style::default());
+                    let mut state = ListState::default().with_selected(Some(app.selected_index));
+                    let body = List::new(list_items)
+                        .block(body_block)
+                        .style(Style::default().fg(Color::Cyan))
+                        .highlight_style(Style::default().bg(Color::DarkGray).fg(Color::Magenta));
+                    frame.render_stateful_widget(body, layout[0], &mut state);
 
-            let footer_block = Block::default().style(Style::default());
-            let footer = Paragraph::new(Text::styled(
-                format!(
-                    "cutty 0.1.0 | @{} | [q]uit | [r]efresh | [s]tories list | [Enter] Show stories in epic",
-                    app.current_member.mention_name
-                ),
-                Style::default().fg(Color::LightBlue),
-            ))
-            .block(footer_block);
-            frame.render_widget(footer, layout[1]);
+                    let footer_block = Block::default().style(Style::default());
+                    let footer = Paragraph::new(Text::styled(
+                        format!(
+                            "cutty 0.1.0 | @{} | [q]uit | [r]efresh | [s]tories list | [Enter] Show stories in epic",
+                            app.current_member.mention_name
+                        ),
+                        Style::default().fg(Color::LightBlue),
+                    ))
+                    .block(footer_block);
+                    frame.render_widget(footer, layout[1]);
+                },
+                None => {
+                    let body_block = Block::default().style(Style::default());
+                    let body = Paragraph::new(Text::styled("No Epics found", Style::default().fg(Color::LightBlue),));
+                    frame.render_widget(body, layout[0]);
+
+                    let footer_block = Block::default().style(Style::default());
+                    let footer = Paragraph::new(Text::styled(
+                        format!(
+                            "cutty 0.1.0 | @{} | [q]uit | [r]efresh | [s]tories list | [Enter] Show stories in epic",
+                            app.current_member.mention_name
+                        ),
+                        Style::default().fg(Color::LightBlue),
+                    ))
+                    .block(footer_block);
+                    frame.render_widget(footer, layout[1]);
+                }
+            }
         }
         CurrentScreen::StoriesList => {
             match &app.current_stories {

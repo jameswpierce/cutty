@@ -19,7 +19,7 @@ pub enum CurrentScreen {
 
 pub struct App {
     pub current_screen: CurrentScreen,
-    pub current_epics: EpicSearchResults,
+    pub current_epics: Option<EpicSearchResults>,
     pub current_member: MemberInfo,
     pub current_stories: Option<StorySearchResults>,
     pub members: Vec<Member>,
@@ -35,8 +35,8 @@ impl App {
         App {
             current_screen: CurrentScreen::StoriesList,
             current_epics: match search_epics() {
-                Ok(current_epics) => current_epics,
-                Err(_error) => panic!("ERROR FETCHING EPICS"),
+                Ok(current_epics) => Some(current_epics),
+                Err(_error) => None
             },
             current_member: match get_current_member() {
                 Ok(current_member) => current_member,
@@ -90,8 +90,8 @@ impl App {
                 }
                 KeyCode::Char('r') => {
                     self.current_epics = match search_epics() {
-                        Ok(current_epics) => current_epics,
-                        Err(_error) => panic!("ERROR FETCHING EPICS"),
+                        Ok(current_epics) => Some(current_epics),
+                        Err(_error) => None,
                     };
                 }
                 KeyCode::Char('s') => {
